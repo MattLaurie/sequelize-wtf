@@ -1,0 +1,31 @@
+services:
+  db:
+    build:
+      context: ./db/mysql
+      args:
+        - MYSQL_IMAGE=mysql
+        - MYSQL_VERSION=8.0.35
+    networks:
+      - app-network
+    ports:
+      - 3306:3306
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=${DATABASE_NAME}
+      - MYSQL_USER=${DATABASE_USERNAME}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-u${DATABASE_USERNAME}", "-p${DATABASE_PASSWORD}"]
+      interval: 30s
+      timeout: 3s
+      start_period: 120s
+      start_interval: 20s
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  db-data:
