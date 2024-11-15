@@ -6,10 +6,12 @@
     "build": "tsc",
     "dev": "tsx src/index.ts",
     "db:up": "docker compose -f compose.yaml up --detach --build",
-    "db:down": "docker compose -f compose.yaml down -v"
+    "db:down": "docker compose -f compose.yaml down -v",
+    "postinstall": "patch-package"
   },
   "devDependencies": {
     "@types/node": "^22.7.6",
+    "patch-package": "^8.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.6.3"
   },
