@@ -1,17 +1,17 @@
-import "dotenv/config";
-import { DataTypes, Sequelize } from "sequelize";
+import 'dotenv/config';
+import { DataTypes, Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
-  dialect: "mysql",
+  dialect: 'mysql',
   host: process.env.DATABASE_HOSTNAME,
   database: process.env.DATABASE_NAME,
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   port: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : undefined,
-  logging: true
+  logging: true,
 });
 
-const Thing = sequelize.define("Thing", {
+const Thing = sequelize.define('Thing', {
   id: {
     type: DataTypes.INTEGER,
     allowNull: false,
@@ -20,12 +20,12 @@ const Thing = sequelize.define("Thing", {
   createdAt: {
     allowNull: false,
     type: DataTypes.DATE,
-    defaultValue: sequelize.fn("NOW"),
+    defaultValue: sequelize.fn('NOW'),
   },
   updatedAt: {
     allowNull: false,
     type: DataTypes.DATE,
-    defaultValue: sequelize.fn("NOW"),
+    defaultValue: sequelize.fn('NOW'),
   },
 });
 
