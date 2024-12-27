@@ -8,7 +8,6 @@ const sequelize = new Sequelize({
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   port: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : undefined,
-  logging: true,
 });
 
 const Thing = sequelize.define('Thing', {
