@@ -1,14 +1,7 @@
 import 'dotenv/config';
 
-import { DataTypes, Sequelize } from 'sequelize'; // https://www.flightcontrol.dev/blog/ultimate-guide-to-multi-tenant-saas-data-modeling
-
-// https://www.flightcontrol.dev/blog/ultimate-guide-to-multi-tenant-saas-data-modeling
-// https://blog.bullettrain.co/teams-should-be-an-mvp-feature
-// https://blitzjs.com/docs/multitenancy
-// https://www.checklyhq.com/blog/building-a-multi-tenant-saas-data-model/
-// https://www.stigg.io/blog-posts/entitlements-untangled-the-modern-way-to-software-monetization
-// https://arnon.dk/why-you-should-separate-your-billing-from-entitlement/
-// https://arnon.dk/design-your-pricing-and-tools-so-you-can-adapt-it-later/
+import { createId } from '@paralleldrive/cuid2';
+import { Op, DataTypes, Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize({
   dialect: 'mysql',
@@ -17,40 +10,65 @@ const sequelize = new Sequelize({
   username: process.env.DATABASE_USERNAME,
   password: process.env.DATABASE_PASSWORD,
   port: process.env.DATABASE_PORT ? Number(process.env.DATABASE_PORT) : undefined,
-  logging: true,
+  logging: false,
 });
 
-const Thing = sequelize.define('Thing', {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    primaryKey: true,
-    autoIncrement: true,
+const Thing = sequelize.define(
+  'Thing',
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    name: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    version: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: createId,
+    },
+    activeFrom: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
+    },
+    activeTo: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: sequelize.fn('NOW'),
+    },
   },
-  type: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  params: {
-    type: DataTypes.JSON,
-    allowNull: false,
-  },
-  createdAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: sequelize.fn('NOW'),
-  },
-  updatedAt: {
-    type: DataTypes.DATE,
-    allowNull: false,
-    defaultValue: sequelize.fn('NOW'),
-  },
-});
+  {
+    indexes: [
+      {
+        name: 'name_version_uniq',
+        fields: ['name', 'version'],
+        unique: true,
+      },
+      {
+        name: 'name_active_idx',
+        fields: ['name', 'activeFrom', 'activeTo'],
+      },
+    ],
+  }
+);
 
 async function stuff() {}
 
 (async () => {
   await sequelize.sync({ force: true });
   await stuff();
-  process.exit(0);
 })();

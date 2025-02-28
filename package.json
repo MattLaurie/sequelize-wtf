@@ -7,6 +7,7 @@
     "dev": "tsx src/index.ts",
     "db:up": "docker compose -f compose.yaml up --detach --build",
     "db:down": "docker compose -f compose.yaml down -v",
+    "db:logs": "docker compose -f compose.yaml logs -f",
     "postinstall": "patch-package"
   },
   "devDependencies": {
